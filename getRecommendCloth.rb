@@ -28,10 +28,112 @@ end
 class Weather < ActiveRecord::Base
 end
 
+#洋服テーブル用のクラスを作成
+class Clothe < ActiveRecord::Base
+end
 
 #推奨TB用のクラスを作成
 class Recommend < ActiveRecord::Base
 end
+
+
+#Tシャツ選択処理
+def selectTshirt(user_id,dt)
+	t_shirts = []
+	puts "user_id:" + user_id.to_s
+	t_shirts = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ?)",user_id,3,4).map{|p| p.attributes }
+	p t_shirts.class
+	if t_shirts.length == 0 then
+		puts "この人はTシャツを持っていません"
+		puts t_shirts
+	else
+		puts "このひとはTシャツを持っています"
+		#puts t_shirts
+		#抽出したTシャツの中から1つランダムで選択
+		t = rand(t_shirts.length)
+		p t_shirts[t]
+		puts t_shirts[t]["id"]
+		Recommend.create(:user_id => user_id,:cloth_id => t_shirts[t]["id"],:date => dt)
+	end
+end
+
+#10度以下2層目,3層目選択処理
+def selectSecondLayer(user_id,dt)
+	secondlayer = []
+	puts "user_id:" + user_id.to_s
+	secondlayer = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,6,7,8,9).map{|p| p.attributes }
+	p secondlayer.class
+	if secondlayer.length == 0 then
+		puts "この人は２層目を持っていません"
+		puts secondlayer
+	else
+		puts "このひとは２層目を持っています"
+		#puts t_shirts
+		#抽出したTシャツの中から1つランダムで選択
+		t = rand(secondlayer.length)
+		p secondlayer[t]
+		puts secondlayer[t]["id"]
+		Recommend.create(:user_id => user_id,:cloth_id => secondlayer[t]["id"],:date => dt)
+		#もし選択した2層目がシャツ（長袖）:6 だった場合、ジャケット:11 も有り
+		if secondlayer[t]["tag_id"] == 6 then
+			u = rand(1)
+			#0だった場合はジャケットあり
+			if u == 0 then
+				thirdlayer = Clothe.where("user_id = ? AND tag_id = ?",user_id,11).map{|p| p.attributes }
+				if thirdlayer.length == 0 then
+					puts "この人は3層目を持っていません"
+				else
+					puts "この人は3層目を持っています"
+					puts thirdlayer
+					t = rand(thirdlayer.length)
+					p thirdlayer[t]
+					puts thirdlayer[t]["id"]
+					Recommend.create(:user_id => user_id,:cloth_id => thirdlayer[t]["id"],:date => dt)
+				end
+			end
+		end
+	end
+end
+
+#10度以下アウター選択処理
+def selectOuter(user_id,dt)
+	outers = []
+	puts "user_id:" + user_id.to_s
+	outers = Clothe.where("user_id = ? AND tag_id = ?",user_id,1).map{|p| p.attributes }
+	p outers.class
+	if outers.length == 0 then
+		puts "この人はアウターを持っていません"
+		puts outers
+	else
+		puts "このひとはアウターを持っています"
+		#抽出したアウターの中から1つランダムで選択
+		t = rand(outers.length)
+		p outers[t]
+		puts outers[t]["id"]
+		Recommend.create(:user_id => user_id,:cloth_id => outers[t]["id"],:date => dt)
+	end
+end
+
+#10度以下ボトムス選択処理
+def selectBottoms(user_id,dt)
+	bottoms = []
+	puts "user_id:" + user_id.to_s
+	bottoms = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,13,14,16,17).map{|p| p.attributes }
+	p bottoms.class
+	if bottoms.length == 0 then
+		puts "この人はボトムスを持っていません"
+		puts bottoms
+	else
+		puts "このひとはボトムスを持っています"
+		#抽出したTシャツの中から1つランダムで選択
+		t = rand(bottoms.length)
+		p bottoms[t]
+		puts bottoms[t]["id"]
+		Recommend.create(:user_id => user_id,:cloth_id => bottoms[t]["id"],:date => dt)
+	end
+end
+
+
 
 #ユーザテーブルの最終行を取得する
 i = User.last.id
@@ -79,12 +181,11 @@ i.times do |j|
 			#puts temp[0].class
 			temp = temp[0].to_i
 			
-				#気温に応じてタグIDの洋服をInsert
-
+			#気温に応じてタグIDの洋服をInsert
 			if temp>=25 then
 				puts temp
 				puts ("SO HOT!!")
-			
+				
 			elsif 20<=temp && temp<25 then
 				puts temp
 				puts ("HOT!!")
@@ -100,13 +201,22 @@ i.times do |j|
 			elsif 5<=temp && temp<10 then
 				puts temp
 				puts ("cool!!")
-			
+				#Tシャツ挿入
+				selectTshirt(temp,user_id,dt)
+				selectSecondLayer(user_id,dt)
+				selectOuter(user_id,dt)
+				
 			elsif temp<5 then
 				puts temp
 				puts ("cold!!")
+				puts "user_id:" + user_id.to_s
+				selectTshirt(user_id,dt)
+				selectSecondLayer(user_id,dt)
+				selectOuter(user_id,dt)
 			end
 		#else
 			#puts "当日日付が含まれていません"
 		end
 	end
 end
+
