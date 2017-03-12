@@ -127,7 +127,7 @@ def selectClothes25(user_id,dt)
 			end
 		end
 		#靴を選択
-		shose = []
+		shoes = []
 		shoes = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ?)",user_id,$sneaker,$sandal).map{|p| p.attributes }
 		if shoes.length == 0 then
 			puts "このひとは靴を持っていません"
@@ -409,7 +409,6 @@ end
 def selectClothes5(user_id,dt)
 	firstLayer = []
 	puts "user_id:" + user_id.to_s
-	puts 3
 	firstLayer = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ?)",user_id,$harf_tshirt,$long_tshirt).map{|p| p.attributes }
 	p firstLayer.class
 	if firstLayer.length == 0 then
