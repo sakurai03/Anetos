@@ -293,6 +293,7 @@ i.times do |j|
 				selectSecondLayer(user_id,dt)
 				selectOuter(user_id,dt)
 				selectBottoms(user_id,dt)
+				selectOthers5(user_id,dt)
 			end
 		#else
 			#puts "当日日付が含まれていません"
