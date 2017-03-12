@@ -42,45 +42,45 @@ class Recommend < ActiveRecord::Base
 end
 
 #変数定義
-warm_outer = 1
-outer = 2
-harf_tshirt = 3
-long_tshirt = 4
-harf_shirt = 5
-long_shirt = 6
-trainer = 7
-sweater = 8
-tunic = 9
-cardigan = 10
-jacket = 11
-one_piece = 12
-long_skirt = 13
-harf_skirt = 14
-short_skirt = 15
-long_pants = 16
-harf_pants = 17
-short_pants = 18
-muffler = 19
-stole =20
-gloves = 21
-hat = 22
-umbrella = 23
-short_socks = 26
-long_socks = 27
-suttokingu = 28
-tights = 29
-sneaker = 30
-leather_shoes = 31
-short_boots = 32
-long_boots = 33
-sandal = 34
-pumps = 35
+$warm_outer = 1
+$outer = 2
+$harf_tshirt = 3
+$long_tshirt = 4
+$harf_shirt = 5
+$long_shirt = 6
+$trainer = 7
+$sweater = 8
+$tunic = 9
+$cardigan = 10
+$jacket  = 11
+$one_piece = 12
+$long_skirt = 13
+$harf_skirt = 14
+$short_skirt = 15
+$long_pants = 16
+$harf_pants = 17
+$short_pants = 18
+$muffler = 19
+$stole =20
+$gloves = 21
+$hat = 22
+$umbrella = 23
+$short_socks = 26
+$long_socks = 27
+$suttokingu = 28
+$tights = 29
+$sneaker = 30
+$leather_shoes = 31
+$short_boots = 32
+$long_boots = 33
+$sandal = 34
+$pumps = 35
 
 #25度以上洋服選択処理
 def selectClothes25(user_id,dt)
 	firstLayer = []
 	log.info puts "user_id:" + user_id.to_s
-	firstLayer = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,harf_tshirt,one_piece,tunic).map{|p| p.attributes }
+	firstLayer = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,$harf_tshirt,$one_piece,$tunic).map{|p| p.attributes }
 	p firstLayer.class
 	if firstLayer.length == 0 then
 		puts "この人は１層目を持っていません"
@@ -99,7 +99,7 @@ def selectClothes25(user_id,dt)
 			#0だった場合はシャツ（半袖）あり
 			if u == 0 then
 				secondlayer = []
-				secondlayer = Clothe.where("user_id = ? AND tag_id = ?",user_id,harf_shirt).map{|p| p.attributes }
+				secondlayer = Clothe.where("user_id = ? AND tag_id = ?",user_id,$harf_shirt).map{|p| p.attributes }
 				if secondlayer.length == 0 then
 					puts "この人は2層目を持っていません"
 				else
@@ -113,9 +113,9 @@ def selectClothes25(user_id,dt)
 			end
 		end
 		#選択したトップスがワンピース以外であれば、ボトムスを選択する
-		unless firstLayer[t]["tag_id"] == one_piece then
+		unless firstLayer[t]["tag_id"] == $one_piece then
 			bottoms =[]
-			bottoms = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,short_pants,harf_pants,short_skirt,harf_skirt).map{|p| p.attributes }
+			bottoms = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,$short_pants,$harf_pants,$short_skirt,$harf_skirt).map{|p| p.attributes }
 			if bottoms.length == 0 then
 				puts "このひとはボトムスを持っていません"
 			else
@@ -127,8 +127,8 @@ def selectClothes25(user_id,dt)
 			end
 		end
 		#靴を選択
-		shose = []
-		shoes = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ?)",user_id,sneaker,sandal).map{|p| p.attributes }
+		shoes = []
+		shoes = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ?)",user_id,$sneaker,$sandal).map{|p| p.attributes }
 		if shoes.length == 0 then
 			puts "このひとは靴を持っていません"
 		else
@@ -140,7 +140,7 @@ def selectClothes25(user_id,dt)
 		end
 		#その他を選択
 		hats = []
-		hats = Clothe.where("user_id = ? AND tag_id = ?",user_id,hat)
+		hats = Clothe.where("user_id = ? AND tag_id = ?",user_id,$hat)
 		if hats.length == 0 then
 			puts "このひとは帽子を持っていません"
 		else
@@ -159,7 +159,7 @@ end
 def selectClothes20(user_id,dt)
 	firstLayer = []
 	puts "user_id:" + user_id.to_s
-	firstLayer = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,harf_tshirt,long_tshirt,tunic).map{|p| p.attributes }
+	firstLayer = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,$harf_tshirt,$long_tshirt,$tunic).map{|p| p.attributes }
 	p firstLayer.class
 	if firstLayer.length == 0 then
 		puts "この人は１層目を持っていません"
@@ -175,7 +175,7 @@ def selectClothes20(user_id,dt)
 		#もし選択した1層目がTシャツ（半袖）:3 だった場合、シャツ（半袖）:5 とシャツ（長袖）:6も有り
 		if firstLayer[t]["tag_id"] == 3 then
 			secondlayer = []
-			secondlayer = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id)",user_id,harf_shirt,long_shirt).map{|p| p.attributes }
+			secondlayer = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id)",user_id,$harf_shirt,$long_shirt).map{|p| p.attributes }
 			if secondlayer.length == 0 then
 				puts "この人は2層目を持っていません"
 			else
@@ -189,7 +189,7 @@ def selectClothes20(user_id,dt)
 		end
 		#ボトムスを選択する
 		bottoms = []
-		bottoms = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,short_pants,harf_pants,short_skirt,harf_skirt).map{|p| p.attributes }
+		bottoms = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,$short_pants,$harf_pants,$short_skirt,$harf_skirt).map{|p| p.attributes }
 		if bottoms.length == 0 then
 			puts "このひとはボトムスを持っていません"
 		else
@@ -201,7 +201,7 @@ def selectClothes20(user_id,dt)
 		end
 		#靴を選択
 		shoes = []
-		shoes = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ?)",user_id,sneaker,sandal).map{|p| p.attributes }
+		shoes = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ?)",user_id,$sneaker,$sandal).map{|p| p.attributes }
 		if shoes.length == 0 then
 			puts "このひとは靴を持っていません"
 		else
@@ -213,7 +213,7 @@ def selectClothes20(user_id,dt)
 		end
 		#その他を選択
 		hats = []
-		hats = Clothe.where("user_id = ? AND tag_id = ?",user_id,hat)
+		hats = Clothe.where("user_id = ? AND tag_id = ?",user_id,$hat)
 		if hats.length == 0 then
 			puts "このひとは帽子を持っていません"
 		else
@@ -232,7 +232,7 @@ end
 def selectClothes15(user_id,dt)
 	firstLayer = []
 	puts "user_id:" + user_id.to_s
-	firstLayer = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,harf_tshirt,long_tshirt,tunic).map{|p| p.attributes }
+	firstLayer = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,$harf_tshirt,$long_tshirt,$tunic).map{|p| p.attributes }
 	p firstLayer.class
 	if firstLayer.length == 0 then
 		puts "この人は１層目を持っていません"
@@ -248,7 +248,7 @@ def selectClothes15(user_id,dt)
 		#もし選択した1層目がTシャツ（半袖）:3 またはTシャツ（長袖）:4だった場合、シャツ（長袖）:6またはチュニック:9を選択
 		if firstLayer[t]["tag_id"] == 3 || firstLayer[t]["tag_id"] == 4 then
 			secondlayer = []
-			secondlayer = Clothe.where("user_id = ? AND tag_id = ? OR tag_id =?",user_id,long_shirt,tunic).map{|p| p.attributes }
+			secondlayer = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id =?)",user_id,$long_shirt,$tunic).map{|p| p.attributes }
 			if secondlayer.length == 0 then
 				puts "この人は2層目を持っていません"
 			else
@@ -260,7 +260,7 @@ def selectClothes15(user_id,dt)
 				Recommend.create(:user_id => user_id,:cloth_id => secondlayer[t]["id"],:date => dt)
 				#シャツ（長袖）を選択した場合、ジャケット:11またはカーディガン:10もあり
 				thirdlayer = []
-				thirdlayer = Clothe.where("user_id = ? AND tag_id = ? OR ",user_id,cardigan,jacket).map{|p| p.attributes }
+				thirdlayer = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ?)",user_id,$cardigan,$jacket ).map{|p| p.attributes }
 				if thirdlayer.length == 0 then
 					puts "このひとは３層目を持っていません"
 				else
@@ -276,7 +276,7 @@ def selectClothes15(user_id,dt)
 		end
 		#ボトムスを選択する
 		bottoms = []
-		bottoms = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,long_pants,harf_pants,long_skirt,harf_skirt).map{|p| p.attributes }
+		bottoms = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,$long_pants,$harf_pants,$long_skirt,$harf_skirt).map{|p| p.attributes }
 		if bottoms.length == 0 then
 			puts "このひとはボトムスを持っていません"
 		else
@@ -288,7 +288,7 @@ def selectClothes15(user_id,dt)
 		end
 		#靴を選択
 		shoes = []
-		shoes = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,sneaker,leather_shoes,pumps).map{|p| p.attributes }
+		shoes = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,$sneaker,$leather_shoes,$pumps).map{|p| p.attributes }
 		if shoes.length == 0 then
 			puts "このひとは靴を持っていません"
 		else
@@ -305,7 +305,7 @@ end
 def selectClothes10(user_id,dt)
 	firstLayer = []
 	puts "user_id:" + user_id.to_s
-	firstLayer = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,harf_tshirt,long_tshirt,tunic).map{|p| p.attributes }
+	firstLayer = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,$harf_tshirt,$long_tshirt,$tunic).map{|p| p.attributes }
 	p firstLayer.class
 	if firstLayer.length == 0 then
 		puts "この人は１層目を持っていません"
@@ -321,7 +321,7 @@ def selectClothes10(user_id,dt)
 		#もし選択した1層目がTシャツ（半袖）:3 またはTシャツ（長袖）:4だった場合、シャツ（長袖）:6 orトレーナー:7 orセーター:8 orチュニック:9を選択
 		if firstLayer[t]["tag_id"] == 3 || firstLayer[t]["tag_id"] == 4 then
 			secondlayer = []
-			secondlayer = Clothe.where("user_id = ? AND tag_id = ? OR tag_id =? OR tag_id =? OR tag_id =?",user_id,long_shirt,trainer,sweater,tunic).map{|p| p.attributes }
+			secondlayer = Clothe.where("user_id = ? AND tag_id = ? OR tag_id =? OR tag_id =? OR tag_id =?",user_id,$long_shirt,$trainer,$sweater,$tunic).map{|p| p.attributes }
 			if secondlayer.length == 0 then
 				puts "この人は2層目を持っていません"
 			else
@@ -333,7 +333,7 @@ def selectClothes10(user_id,dt)
 				Recommend.create(:user_id => user_id,:cloth_id => secondlayer[t]["id"],:date => dt)
 				#シャツ（長袖）を選択した場合、ジャケット:11あり
 				thirdlayer = []
-				thirdlayer = Clothe.where("user_id = ? AND tag_id = ?",user_id,jacket).map{|p| p.attributes }
+				thirdlayer = Clothe.where("user_id = ? AND tag_id = ?",user_id,$jacket ).map{|p| p.attributes }
 				if thirdlayer.length == 0 then
 					puts "このひとは３層目を持っていません"
 				else
@@ -349,7 +349,7 @@ def selectClothes10(user_id,dt)
 		end
 		#アウターを選択する
 		outers = []
-		outers = Clothe.where("user_id = ? AND tag_id = ?",user_id,outer).map{|p| p.attributes }
+		outers = Clothe.where("user_id = ? AND tag_id = ?",user_id,$outer).map{|p| p.attributes }
 		if outers.length == 0 then
 			puts "この人はアウターを持っていません"
 		else
@@ -365,7 +365,7 @@ def selectClothes10(user_id,dt)
 		end
 		#ボトムスを選択する
 		bottoms = []
-		bottoms = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,long_pants,harf_pants,long_skirt,harf_skirt).map{|p| p.attributes }
+		bottoms = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,$long_pants,$harf_pants,$long_skirt,$harf_skirt).map{|p| p.attributes }
 		if bottoms.length == 0 then
 			puts "このひとはボトムスを持っていません"
 		else
@@ -377,7 +377,7 @@ def selectClothes10(user_id,dt)
 		end
 		#靴を選択
 		shoes = []
-		shoes = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,sneaker,leather_shoes,short_boots,pumps).map{|p| p.attributes }
+		shoes = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,$sneaker,$leather_shoes,$short_boots,$pumps).map{|p| p.attributes }
 		if shoes.length == 0 then
 			puts "このひとは靴を持っていません"
 		else
@@ -389,7 +389,7 @@ def selectClothes10(user_id,dt)
 		end
 		#その他を選択
 		socks = []
-		socks = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,long_socks,suttokingu,tights)
+		socks = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,$long_socks,$suttokingu,$tights)
 		if socks.length == 0 then
 			puts "このひとは靴下を持っていません"
 		else
@@ -409,7 +409,7 @@ end
 def selectClothes5(user_id,dt)
 	firstLayer = []
 	puts "user_id:" + user_id.to_s
-	firstLayer = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ?)",user_id,harf_tshirt,long_tshirt).map{|p| p.attributes }
+	firstLayer = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ?)",user_id,$harf_tshirt,$long_tshirt).map{|p| p.attributes }
 	p firstLayer.class
 	if firstLayer.length == 0 then
 		puts "この人は１層目を持っていません"
@@ -425,7 +425,7 @@ def selectClothes5(user_id,dt)
 		#もし選択した1層目がTシャツ（半袖）:3 またはTシャツ（長袖）:4だった場合、シャツ（長袖）:6 orトレーナー:7 orセーター:8 orチュニック:9を選択
 		if firstLayer[t]["tag_id"] == 3 || firstLayer[t]["tag_id"] == 4 then
 			secondlayer = []
-			secondlayer = Clothe.where("user_id = ? AND tag_id = ? OR tag_id =? OR tag_id =? OR tag_id =?",user_id,long_shirt,trainer,sweater,tunic).map{|p| p.attributes }
+			secondlayer = Clothe.where("user_id = ? AND tag_id = ? OR tag_id =? OR tag_id =? OR tag_id =?",user_id,$long_shirt,$trainer,$sweater,$tunic).map{|p| p.attributes }
 			if secondlayer.length == 0 then
 				puts "この人は2層目を持っていません"
 			else
@@ -437,7 +437,7 @@ def selectClothes5(user_id,dt)
 				Recommend.create(:user_id => user_id,:cloth_id => secondlayer[t]["id"],:date => dt)
 				#シャツ（長袖）を選択した場合、ジャケット:11あり
 				thirdlayer = []
-				thirdlayer = Clothe.where("user_id = ? AND tag_id = ?",user_id,jacket).map{|p| p.attributes }
+				thirdlayer = Clothe.where("user_id = ? AND tag_id = ?",user_id,$jacket ).map{|p| p.attributes }
 				if thirdlayer.length == 0 then
 					puts "このひとは３層目を持っていません"
 				else
@@ -453,7 +453,7 @@ def selectClothes5(user_id,dt)
 		end
 		#アウターを選択する
 		outers = []
-		outers = Clothe.where("user_id = ? AND tag_id = ?",user_id,warm_outer).map{|p| p.attributes }
+		outers = Clothe.where("user_id = ? AND tag_id = ?",user_id,$warm_outer).map{|p| p.attributes }
 		if outers.length == 0 then
 			puts "この人はアウター(厚手)を持っていません"
 		else
@@ -465,7 +465,7 @@ def selectClothes5(user_id,dt)
 		end
 		#ボトムスを選択する
 		bottoms = []
-		bottoms = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,long_pants,harf_pants,long_skirt,harf_skirt).map{|p| p.attributes }
+		bottoms = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,$long_pants,$harf_pants,$long_skirt,$harf_skirt).map{|p| p.attributes }
 		if bottoms.length == 0 then
 			puts "このひとはボトムスを持っていません"
 		else
@@ -477,7 +477,7 @@ def selectClothes5(user_id,dt)
 		end
 		#靴を選択
 		shoes = []
-		shoes = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,sneaker,leather_shoes,short_boots,pumps).map{|p| p.attributes }
+		shoes = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,$sneaker,$leather_shoes,$short_boots,$pumps).map{|p| p.attributes }
 		if shoes.length == 0 then
 			puts "このひとは靴を持っていません"
 		else
@@ -490,7 +490,7 @@ def selectClothes5(user_id,dt)
 		#その他を選択
 		#靴下を選択
 		socks = []
-		socks = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,long_socks,suttokingu,tights)
+		socks = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,$long_socks,$suttokingu,$tights)
 		if socks.length == 0 then
 			puts "このひとは靴下を持っていません"
 		else
@@ -504,7 +504,7 @@ def selectClothes5(user_id,dt)
 		end
 		#防寒具を選択
 		hot_items = []
-		hot_items = Clothe.where("user_id = ? AND tag_id = ?)",user_id,muffler)
+		hot_items = Clothe.where("user_id = ? AND tag_id = ?",user_id,$muffler)
 		if hot_items.length == 0 then
 			puts "このひとは防寒具を持っていません"
 		else
@@ -523,7 +523,7 @@ end
 def selectClothes(user_id,dt)
 	firstLayer = []
 	puts "user_id:" + user_id.to_s
-	firstLayer = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ?)",user_id,harf_tshirt,long_tshirt).map{|p| p.attributes }
+	firstLayer = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ?)",user_id,$harf_tshirt,$long_tshirt).map{|p| p.attributes }
 	p firstLayer.class
 	if firstLayer.length == 0 then
 		puts "この人は１層目を持っていません"
@@ -539,7 +539,7 @@ def selectClothes(user_id,dt)
 		#もし選択した1層目がTシャツ（半袖）:3 またはTシャツ（長袖）:4だった場合、シャツ（長袖）:6 orトレーナー:7 orセーター:8 orチュニック:9を選択
 		if firstLayer[t]["tag_id"] == 3 || firstLayer[t]["tag_id"] == 4 then
 			secondlayer = []
-			secondlayer = Clothe.where("user_id = ? AND tag_id = ? OR tag_id =? OR tag_id =? OR tag_id =?",user_id,long_shirt,trainer,sweater,tunic).map{|p| p.attributes }
+			secondlayer = Clothe.where("user_id = ? AND tag_id = ? OR tag_id =? OR tag_id =? OR tag_id =?",user_id,$long_shirt,$trainer,$sweater,$tunic).map{|p| p.attributes }
 			if secondlayer.length == 0 then
 				puts "この人は2層目を持っていません"
 			else
@@ -551,7 +551,7 @@ def selectClothes(user_id,dt)
 				Recommend.create(:user_id => user_id,:cloth_id => secondlayer[t]["id"],:date => dt)
 				#シャツ（長袖）を選択した場合、ジャケット:11あり
 				thirdlayer = []
-				thirdlayer = Clothe.where("user_id = ? AND tag_id = ?",user_id,jacket).map{|p| p.attributes }
+				thirdlayer = Clothe.where("user_id = ? AND tag_id = ?",user_id,$jacket ).map{|p| p.attributes }
 				if thirdlayer.length == 0 then
 					puts "このひとは３層目を持っていません"
 				else
@@ -567,7 +567,7 @@ def selectClothes(user_id,dt)
 		end
 		#アウターを選択する
 		outers = []
-		outers = Clothe.where("user_id = ? AND tag_id = ?",user_id,warm_outer).map{|p| p.attributes }
+		outers = Clothe.where("user_id = ? AND tag_id = ?",user_id,$warm_outer).map{|p| p.attributes }
 		if outers.length == 0 then
 			puts "この人はアウター(厚手)を持っていません"
 		else
@@ -579,7 +579,7 @@ def selectClothes(user_id,dt)
 		end
 		#ボトムスを選択する
 		bottoms = []
-		bottoms = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,long_pants,harf_pants,long_skirt,harf_skirt).map{|p| p.attributes }
+		bottoms = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,$long_pants,$harf_pants,$long_skirt,$harf_skirt).map{|p| p.attributes }
 		if bottoms.length == 0 then
 			puts "このひとはボトムスを持っていません"
 		else
@@ -591,7 +591,7 @@ def selectClothes(user_id,dt)
 		end
 		#靴を選択
 		shoes = []
-		shoes = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,sneaker,leather_shoes,short_boots,long_boots,pumps).map{|p| p.attributes }
+		shoes = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,$sneaker,$leather_shoes,$short_boots,$long_boots,$pumps).map{|p| p.attributes }
 		if shoes.length == 0 then
 			puts "このひとは靴を持っていません"
 		else
@@ -604,7 +604,7 @@ def selectClothes(user_id,dt)
 		#その他を選択
 		#靴下を選択
 		socks = []
-		socks = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,long_socks,suttokingu,tights)
+		socks = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,$long_socks,$suttokingu,$tights)
 		if socks.length == 0 then
 			puts "このひとは靴下を持っていません"
 		else
@@ -615,7 +615,7 @@ def selectClothes(user_id,dt)
 		end
 		#防寒具を選択
 		hot_items = []
-		hot_items = Clothe.where("user_id = ? AND tag_id = ?)",user_id,muffler)
+		hot_items = Clothe.where("user_id = ? AND tag_id = ?",user_id,$muffler)
 		if hot_items.length == 0 then
 			puts "このひとは防寒具を持っていません"
 		else
