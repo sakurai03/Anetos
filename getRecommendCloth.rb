@@ -36,6 +36,239 @@ end
 class Recommend < ActiveRecord::Base
 end
 
+#変数定義
+harf_tshirt = 3
+long_tshirt = 4
+harf_shirt = 5
+long_shirt = 6
+tunic = 9
+cardigan = 10
+jacket = 11
+one_piece = 12
+long_skirt = 13
+harf_skirt = 14
+short_skirt = 15
+long_pants = 16
+harf_pants = 17
+short_pants = 18
+hat = 22
+sneaker = 30
+leather_shoes = 31
+sandal = 34
+pumps = 35
+
+#25度以上洋服選択処理
+def selectClothes25(user_id,dt)
+	firstLayer = []
+	puts "user_id:" + user_id.to_s
+	firstLayer = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,harf_tshirt,one_piece,tunic).map{|p| p.attributes }
+	p firstLayer.class
+	if firstLayer.length == 0 then
+		puts "この人は１層目を持っていません"
+		puts firstLayer
+	else
+		puts "この人は１層目を持っています"
+		#puts firstLayer
+		#抽出したTシャツの中から1つランダムで選択
+		t = rand(firstLayer.length)
+		p firstLayer[t]
+		puts firstLayer[t]["id"]
+		Recommend.create(:user_id => user_id,:cloth_id => firstLayer[t]["id"],:date => dt)
+		#もし選択した1層目がTシャツ（半袖）:3 だった場合、シャツ（半袖）:5 も有り
+		if firstLayer[t]["tag_id"] == 3 then
+			u = rand(1)
+			#0だった場合はシャツ（半袖）あり
+			if u == 0 then
+				secondlayer = Clothe.where("user_id = ? AND tag_id = ?",user_id,harf_shirt).map{|p| p.attributes }
+				if secondlayer.length == 0 then
+					puts "この人は2層目を持っていません"
+				else
+					puts "この人は2層目を持っています"
+					puts secondlayer
+					t = rand(secondlayer.length)
+					p secondlayer[t]
+					puts secondlayert]["id"]
+					Recommend.create(:user_id => user_id,:cloth_id => secondlayer[t]["id"],:date => dt)
+				end
+			end
+		end
+		#選択したトップスがワンピース以外であれば、ボトムスを選択する
+		unless firstLayer[t]["tag_id"] == one_piece then
+			bottoms = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,short_pants,harf_pants,short_skirt,harf_skirt).map{|p| p.attributes }
+			if bottoms.length == 0 then
+				puts "このひとはボトムスを持っていません"
+			else
+				puts "このひとはボトムスを持っています"
+				t = rand(bottoms.length)
+				p bottoms[t]
+				puts bottoms[t]["id"]
+				Recommend.create(:user_id => user_id,:cloth_id => bottoms[t]["id"],:date => dt)
+			end
+		end
+		#靴を選択
+		shoes = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ?)",user_id,sneaker,sandal).map{|p| p.attributes }
+		if shoes.length == 0 then
+			puts "このひとは靴を持っていません"
+		else
+			puts "このひとは靴を持っています"
+			t = rand(shoes.length)
+			p shoes[t]
+			puts shoes[t]["id"]
+			Recommend.create(:user_id => user_id,:cloth_id => shoes[t]["id"],:date = dt)
+		end
+		#その他を選択
+		hats = Clothe.where("user_id = ? AND tag_id = ?",user_id,hat)
+		if hats.length == 0 then
+			puts "このひとは帽子を持っていません"
+		else
+			puts "このひとは帽子をもっています"
+			u = rand(1)
+			t = rand(hats.length)
+			#0だった場合は帽子あり
+			if u == 0 then
+				Recommend.create(:user_id => user_id,:cloth_id => hats[t]["id"],:date = dt)
+			end
+		end
+	end
+end
+
+#20度以上25度以下洋服選択処理
+def selectClothes20(user_id,dt)
+	firstLayer = []
+	puts "user_id:" + user_id.to_s
+	firstLayer = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,harf_tshirt,long_tshirt,tunic).map{|p| p.attributes }
+	p firstLayer.class
+	if firstLayer.length == 0 then
+		puts "この人は１層目を持っていません"
+		puts firstLayer
+	else
+		puts "この人は１層目を持っています"
+		#puts firstLayer
+		#抽出した1層目の中から1つランダムで選択
+		t = rand(firstLayer.length)
+		p firstLayer[t]
+		puts firstLayer[t]["id"]
+		Recommend.create(:user_id => user_id,:cloth_id => firstLayer[t]["id"],:date => dt)
+		#もし選択した1層目がTシャツ（半袖）:3 だった場合、シャツ（半袖）:5 とシャツ（長袖）:6も有り
+		if firstLayer[t]["tag_id"] == 3 then
+			secondlayer = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id)",user_id,harf_shirt,long_shirt).map{|p| p.attributes }
+			if secondlayer.length == 0 then
+				puts "この人は2層目を持っていません"
+			else
+				puts "この人は2層目を持っています"
+				puts secondlayer
+				t = rand(secondlayer.length)
+				p secondlayer[t]
+				puts secondlayert]["id"]
+				Recommend.create(:user_id => user_id,:cloth_id => secondlayer[t]["id"],:date => dt)
+			end
+		end
+		#ボトムスを選択する
+		bottoms = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,short_pants,harf_pants,short_skirt,harf_skirt).map{|p| p.attributes }
+		if bottoms.length == 0 then
+			puts "このひとはボトムスを持っていません"
+		else
+			puts "このひとはボトムスを持っています"
+			t = rand(bottoms.length)
+			p bottoms[t]
+			puts bottoms[t]["id"]
+			Recommend.create(:user_id => user_id,:cloth_id => bottoms[t]["id"],:date => dt)
+		end
+		#靴を選択
+		shoes = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ?)",user_id,sneaker,sandal).map{|p| p.attributes }
+		if shoes.length == 0 then
+			puts "このひとは靴を持っていません"
+		else
+			puts "このひとは靴を持っています"
+			t = rand(shoes.length)
+			p shoes[t]
+			puts shoes[t]["id"]
+			Recommend.create(:user_id => user_id,:cloth_id => shoes[t]["id"],:date = dt)
+		end
+		#その他を選択
+		hats = Clothe.where("user_id = ? AND tag_id = ?",user_id,hat)
+		if hats.length == 0 then
+			puts "このひとは帽子を持っていません"
+		else
+			puts "このひとは帽子をもっています"
+			u = rand(1)
+			t = rand(hats.length)
+			#0だった場合は帽子あり
+			if u == 0 then
+				Recommend.create(:user_id => user_id,:cloth_id => hats[t]["id"],:date = dt)
+			end
+		end
+	end
+end
+
+#15度以上20度以下洋服選択処理
+def selectClothes15(user_id,dt)
+	firstLayer = []
+	puts "user_id:" + user_id.to_s
+	firstLayer = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,harf_tshirt,long_tshirt,tunic).map{|p| p.attributes }
+	p firstLayer.class
+	if firstLayer.length == 0 then
+		puts "この人は１層目を持っていません"
+		puts firstLayer
+	else
+		puts "この人は１層目を持っています"
+		#puts firstLayer
+		#抽出した1層目の中から1つランダムで選択
+		t = rand(firstLayer.length)
+		p firstLayer[t]
+		puts firstLayer[t]["id"]
+		Recommend.create(:user_id => user_id,:cloth_id => firstLayer[t]["id"],:date => dt)
+		#もし選択した1層目がTシャツ（半袖）:3 またはTシャツ（長袖）:4だった場合、シャツ（長袖）:6またはチュニック:9を選択
+		if firstLayer[t]["tag_id"] == 3 || firstLayer[t]["tag_id"] == 4 then
+			secondlayer = Clothe.where("user_id = ? AND tag_id = ? OR tag_id =?",user_id,long_shirt,tunic).map{|p| p.attributes }
+			if secondlayer.length == 0 then
+				puts "この人は2層目を持っていません"
+			else
+				puts "この人は2層目を持っています"
+				puts secondlayer
+				t = rand(secondlayer.length)
+				p secondlayer[t]
+				puts secondlayert]["id"]
+				Recommend.create(:user_id => user_id,:cloth_id => secondlayer[t]["id"],:date => dt)
+				#シャツ（長袖）を選択した場合、ジャケット:11またはカーディガン:10もあり
+				thirdlayer = Clothe.where("user_id = ? AND tag_id = ? OR ",user_id,cardigan,jacket).map{|p| p.attributes }
+				if thirdlayer.length == 0 then
+					puts "このひとは３層目を持っていません"
+				else
+					puts "このひとは３層目を持っています"
+					u = rand(1)
+					t = rand(thirdlayer.length)
+					#uが0だった場合はジャケット、カーディガン有り
+					if u == 0 then
+						Recommend.create(:user_id => user_id,:cloth_id => thirdlayer[t]["id"],:date = dt)
+					end
+				end
+			end
+		end
+		#ボトムスを選択する
+		bottoms = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,long_pants,harf_pants,long_skirt,harf_skirt).map{|p| p.attributes }
+		if bottoms.length == 0 then
+			puts "このひとはボトムスを持っていません"
+		else
+			puts "このひとはボトムスを持っています"
+			t = rand(bottoms.length)
+			p bottoms[t]
+			puts bottoms[t]["id"]
+			Recommend.create(:user_id => user_id,:cloth_id => bottoms[t]["id"],:date => dt)
+		end
+		#靴を選択
+		shoes = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,sneaker,leather_shoes,pumps).map{|p| p.attributes }
+		if shoes.length == 0 then
+			puts "このひとは靴を持っていません"
+		else
+			puts "このひとは靴を持っています"
+			t = rand(shoes.length)
+			p shoes[t]
+			puts shoes[t]["id"]
+			Recommend.create(:user_id => user_id,:cloth_id => shoes[t]["id"],:date = dt)
+		end
+	end
+end
 
 #Tシャツ選択処理
 def selectTshirt(user_id,dt)
@@ -185,14 +418,17 @@ i.times do |j|
 			if temp>=25 then
 				puts temp
 				puts ("SO HOT!!")
+				selectClothes25(user_id,dt)
 				
 			elsif 20<=temp && temp<25 then
 				puts temp
 				puts ("HOT!!")
-			
+				selectClothes20(user_id,dt)
+
 			elsif 15<=temp && temp<20 then
 				puts temp
 				puts ("WARM!!")
+				selectClothes15(user_id,dt)
 			
 			elsif 10<=temp && temp<15 then
 				puts temp
