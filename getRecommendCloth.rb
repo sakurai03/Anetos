@@ -291,7 +291,7 @@ def selectTshirt(user_id,dt)
 end
 
 #10度以下2層目,3層目選択処理
-def selectSecondLayer(user_id,dt)
+def selectSecondLayer10(user_id,dt)
 	secondlayer = []
 	puts "user_id:" + user_id.to_s
 	secondlayer = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,6,7,8,9).map{|p| p.attributes }
@@ -328,8 +328,29 @@ def selectSecondLayer(user_id,dt)
 	end
 end
 
+
+#15度以下アウター選択処理
+def selectOuters15(user_id,dt)
+	outers = []
+	puts "user_id:" + user_id.to_s
+	outers = Clothe.where("user_id = ? AND tag_id = ?",user_id,2).map{|p| p.attributes }
+	p outers.class
+	if outers.length == 0 then
+		puts "この人はアウターを持っていません"
+		puts outers
+	else
+		puts "このひとはアウターを持っています"
+		#抽出したアウターの中から1つランダムで選択
+		t = rand(outers.length)
+		p outers[t]
+		puts outers[t]["id"]
+		Recommend.create(:user_id => user_id,:cloth_id => outers[t]["id"],:date => dt)
+	end
+end
+
+
 #10度以下アウター選択処理
-def selectOuter(user_id,dt)
+def selectOuters10(user_id,dt)
 	outers = []
 	puts "user_id:" + user_id.to_s
 	outers = Clothe.where("user_id = ? AND tag_id = ?",user_id,1).map{|p| p.attributes }
@@ -348,7 +369,7 @@ def selectOuter(user_id,dt)
 end
 
 #10度以下ボトムス選択処理
-def selectBottoms(user_id,dt)
+def selectBottoms10(user_id,dt)
 	bottoms = []
 	puts "user_id:" + user_id.to_s
 	bottoms = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,13,14,16,17).map{|p| p.attributes }
@@ -363,6 +384,63 @@ def selectBottoms(user_id,dt)
 		p bottoms[t]
 		puts bottoms[t]["id"]
 		Recommend.create(:user_id => user_id,:cloth_id => bottoms[t]["id"],:date => dt)
+	end
+end
+
+#10度以下靴選択処理
+def selectShoes10(user_id,dt)
+	shoes = []
+	puts "user_id:" + user_id.to_s
+	shoes = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,30,31,35).map{|p| p.attributes }
+	p shoes.class
+	if shoes.length == 0 then
+		puts "この人は靴を持っていません"
+		puts shoes
+	else
+		puts "このひとは靴を持っています"
+		#抽出したTシャツの中から1つランダムで選択
+		t = rand(shoes.length)
+		p shoes[t]
+		puts shoes[t]["id"]
+		Recommend.create(:user_id => user_id,:cloth_id => shoes[t]["id"],:date => dt)
+	end
+end
+
+#5度以下靴選択処理
+def selectShoes5(user_id,dt)
+	shoes = []
+	puts "user_id:" + user_id.to_s
+	shoes = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,30,31,33,35).map{|p| p.attributes }
+	p shoes.class
+	if shoes.length == 0 then
+		puts "この人は靴を持っていません"
+		puts shoes
+	else
+		puts "このひとは靴を持っています"
+		#抽出したTシャツの中から1つランダムで選択
+		t = rand(shoes.length)
+		p shoes[t]
+		puts shoes[t]["id"]
+		Recommend.create(:user_id => user_id,:cloth_id => shoes[t]["id"],:date => dt)
+	end
+end
+
+#5度以下その他択処理
+def selectOthers5(user_id,dt)
+	others = []
+	puts "user_id:" + user_id.to_s
+	others = Clothe.where("user_id = ? AND (tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ? OR tag_id = ?)",user_id,19,21,27,28,29).map{|p| p.attributes }
+	p others.class
+	if others.length == 0 then
+		puts "この人はその他を持っていません"
+		puts others
+	else
+		puts "このひとはその他を持っています"
+		#抽出したその他の中から1つランダムで選択
+		t = rand(others.length)
+		p others[t]
+		puts others[t]["id"]
+		Recommend.create(:user_id => user_id,:cloth_id => others[t]["id"],:date => dt)
 	end
 end
 
@@ -438,9 +516,10 @@ i.times do |j|
 				puts temp
 				puts ("cool!!")
 				#Tシャツ挿入
-				selectTshirt(temp,user_id,dt)
+				selectTshirt(user_id,dt)
 				selectSecondLayer(user_id,dt)
 				selectOuter(user_id,dt)
+				selectBottoms(user_id,dt)
 				
 			elsif temp<5 then
 				puts temp
@@ -449,6 +528,8 @@ i.times do |j|
 				selectTshirt(user_id,dt)
 				selectSecondLayer(user_id,dt)
 				selectOuter(user_id,dt)
+				selectBottoms(user_id,dt)
+				selectOthers5(user_id,dt)
 			end
 		#else
 			#puts "当日日付が含まれていません"
